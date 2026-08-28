@@ -1,5 +1,7 @@
+import { Button } from "@/shared/components/ui/button";
+
 function App() {
-  return <div>App</div>;
+  return <Button>App</Button>;
 }
 
 export default App;
