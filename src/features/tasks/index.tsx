@@ -1,7 +1,10 @@
-import { SearchBar } from "../components/filters/SearchBar";
-import { FilterBar } from "../components/filters/FilterBar";
+import { SearchBar } from "./components/filters/SearchBar";
+import { FilterBar } from "./components/filters/FilterBar";
 import { useTasksFilters } from "./hooks/useTaskFilters";
 import { useTasks } from "./hooks/useTask";
+import VirtualizedTaskList from "./components/list/VirtualizedTaskList";
+import { useMemo } from "react";
+import { filterTasks } from "./utils/filterTasks";
 
 function TasksFeature() {
   const { data: tasks, isLoading, error } = useTasks();
@@ -19,6 +22,16 @@ function TasksFeature() {
     setTo,
     resetFilters,
   } = useTasksFilters();
+
+  const filteredTasks = useMemo(() => {
+    return filterTasks(tasks || [], {
+      q: searchQuery,
+      status,
+      priority,
+      from,
+      to,
+    });
+  }, [tasks, searchQuery, status, priority, from, to]);
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -45,7 +58,11 @@ function TasksFeature() {
         ) : error ? (
           <div>Error: {error.message}</div>
         ) : (
-          tasks?.map((task) => <div key={task.id}>{task.title}</div>)
+          <VirtualizedTaskList
+            tasks={filteredTasks!}
+            onEdit={(id: string) => {}}
+            onDelete={(id: string) => {}}
+          />
         )}
       </div>
     </div>
