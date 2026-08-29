@@ -7,7 +7,7 @@ export function Header() {
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-semibold">
           <CheckSquare className="h-5 w-5" />
         </div>
-        <h1 className="text-lg font-bold tracking-tight text-foreground">
+        <h1 className="text-xl! font-bold tracking-tight text-foreground">
           Task &amp; Workflow Workspace
         </h1>
       </div>
