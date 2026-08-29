@@ -38,15 +38,15 @@ export function FilterBar({
     status !== "all" || priority !== "all" || Boolean(from) || Boolean(to);
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3 ">
       {/* Status Filter */}
-      <div className="w-36">
+      <div className="w-36 min-w-[100px]">
         <Select
           value={status}
           onValueChange={(value) => onStatusChange(value as TaskStatus | "all")}
           aria-label="Filter by status"
         >
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-28">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -70,7 +70,7 @@ export function FilterBar({
           }
           aria-label="Filter by priority"
         >
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-28">
             <SelectValue placeholder="Priority" />
           </SelectTrigger>
           <SelectContent>
@@ -92,7 +92,7 @@ export function FilterBar({
           type="date"
           value={from}
           onChange={(e) => onFromChange(e.target.value)}
-          className="w-36 h-9 text-xs"
+          className="w-32 h-9 text-xs"
           aria-label="Filter by start date"
         />
       </div>
@@ -104,7 +104,7 @@ export function FilterBar({
           type="date"
           value={to}
           onChange={(e) => onToChange(e.target.value)}
-          className="w-36 h-9 text-xs"
+          className="w-32 h-9 text-xs"
           aria-label="Filter by end date"
         />
       </div>

@@ -78,7 +78,7 @@ function TasksFeature() {
           <Button
             type="button"
             variant={viewMode === "board" ? "secondary" : "ghost"}
-            size="sm"
+            size="xs"
             onClick={() => setViewMode("board")}
             className="h-8 gap-1.5 px-2.5 text-xs"
             aria-label="Switch to Board View"
@@ -89,7 +89,7 @@ function TasksFeature() {
           <Button
             type="button"
             variant={viewMode === "list" ? "secondary" : "ghost"}
-            size="sm"
+            size="xs"
             onClick={() => setViewMode("list")}
             className="h-8 gap-1.5 px-2.5 text-xs"
             aria-label="Switch to List View"
@@ -100,7 +100,7 @@ function TasksFeature() {
         </div>
 
         {/* Create task button */}
-        <Button onClick={openCreate} className="h-9 gap-1.5 text-sm">
+        <Button onClick={openCreate} size="xs" className="h-9 gap-1.5 text-sm">
           <Plus className="h-4 w-4" />
           Create Task
         </Button>
