@@ -7,9 +7,10 @@ import { useMemo } from "react";
 import { filterTasks } from "./utils/filterTasks";
 import { useTaskUIStore } from "./store/uiStore";
 import { TaskModal } from "./components/task-form/TaskModal";
-import { Plus } from "lucide-react";
+import { LayoutGrid, ListIcon, Plus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { DeleteTaskDialog } from "./components/task-form/DeleteTaskDialog";
+import { KanbanBoard } from "./components/board/KanbanBoard";
 
 function TasksFeature() {
   const {
@@ -21,6 +22,8 @@ function TasksFeature() {
     closeModal,
     openDelete,
     closeDelete,
+    viewMode,
+    setViewMode,
   } = useTaskUIStore();
 
   const { data: tasks, isLoading, error, refetch } = useTasks();
@@ -71,6 +74,30 @@ function TasksFeature() {
             onReset={resetFilters}
           />
         </div>
+        <div className="flex items-center border border-border rounded-md bg-muted/40 p-0.5">
+          <Button
+            type="button"
+            variant={viewMode === "board" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("board")}
+            className="h-8 gap-1.5 px-2.5 text-xs"
+            aria-label="Switch to Board View"
+          >
+            <LayoutGrid className="h-3.5 w-3.5" />
+            Board
+          </Button>
+          <Button
+            type="button"
+            variant={viewMode === "list" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("list")}
+            className="h-8 gap-1.5 px-2.5 text-xs"
+            aria-label="Switch to List View"
+          >
+            <ListIcon className="h-3.5 w-3.5" />
+            List
+          </Button>
+        </div>
 
         {/* Create task button */}
         <Button onClick={openCreate} className="h-9 gap-1.5 text-sm">
@@ -79,7 +106,7 @@ function TasksFeature() {
         </Button>
       </div>
 
-      <div>
+      <div className="flex-1 min-h-0 flex flex-col">
         {isLoading ? (
           <div>Loading...</div>
         ) : error ? (
@@ -91,9 +118,15 @@ function TasksFeature() {
               Retry
             </Button>
           </div>
+        ) : viewMode === "board" ? (
+          <KanbanBoard
+            tasks={filteredTasks}
+            onEdit={openEdit}
+            onDelete={openDelete}
+          />
         ) : (
           <VirtualizedTaskList
-            tasks={filteredTasks!}
+            tasks={filteredTasks}
             onEdit={openEdit}
             onDelete={openDelete}
           />

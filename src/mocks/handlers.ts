@@ -19,7 +19,7 @@ function generateTask(): Task {
   };
 }
 
-export let tasksDb: Task[] = Array.from({ length: 500 }, generateTask);
+export let tasksDb: Task[] = Array.from({ length: 20 }, generateTask);
 
 export const handlers = [
   http.get("/api/tasks", () => HttpResponse.json(tasksDb)),

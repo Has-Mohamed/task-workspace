@@ -58,3 +58,28 @@ export function useDeleteTask() {
     },
   });
 }
+
+export function useUpdateTaskStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: taskService.updateStatus,
+    onMutate: ({ id, status }: { id: string; status: TaskStatus }) => {
+      qc.cancelQueries({ queryKey: taskKeys.all });
+      const previousTasks = qc.getQueryData<Task[]>(taskKeys.all) || [];
+
+      qc.setQueryData(
+        taskKeys.all,
+        previousTasks.map((old) => (old.id === id ? { ...old, status } : old)),
+      );
+      return { previousTasks };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousTasks) {
+        qc.setQueryData(taskKeys.all, context.previousTasks);
+      }
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: taskKeys.all });
+    },
+  });
+}
