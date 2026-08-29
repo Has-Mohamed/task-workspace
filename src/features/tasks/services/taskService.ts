@@ -8,16 +8,25 @@ export const taskService = {
       method: "POST",
       body: JSON.stringify(data),
     }),
-  update: (
-    id: string,
-    data: Partial<Omit<Task, "id" | "createdAt" | "updatedAt">>,
-  ): Promise<Task> =>
+  update: ({
+    id,
+    ...update
+  }: {
+    id: string;
+    data: Partial<Omit<Task, "id" | "createdAt" | "updatedAt">>;
+  }): Promise<Task> =>
     apiClient(`/api/tasks/${id}`, {
       method: "PATCH",
-      body: JSON.stringify(data),
+      body: JSON.stringify(update),
     }),
-  updateStatus: (id: string, status: TaskStatus): Promise<Task> =>
-    apiClient<Task>(`/api/tasks/${id}`, {
+  updateStatus: ({
+    id,
+    status,
+  }: {
+    id: string;
+    status: TaskStatus;
+  }): Promise<Task> =>
+    apiClient(`/api/tasks/${id}`, {
       method: "PATCH",
       body: JSON.stringify({ status }),
     }),
