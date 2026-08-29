@@ -23,11 +23,6 @@ export let tasksDb: Task[] = Array.from({ length: 500 }, generateTask);
 
 export const handlers = [
   http.get("/api/tasks", () => HttpResponse.json(tasksDb)),
-  http.get("/api/tasks/:id", ({ params }) => {
-    const { id } = params;
-    const task = tasksDb.find((t) => t.id === id);
-    return HttpResponse.json(task);
-  }),
 
   http.post("/api/tasks", async ({ request }) => {
     const body = (await request.json()) as Omit<
