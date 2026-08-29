@@ -11,9 +11,8 @@ export const taskService = {
   update: ({
     id,
     ...update
-  }: {
+  }: Partial<Omit<Task, "id" | "createdAt" | "updatedAt">> & {
     id: string;
-    data: Partial<Omit<Task, "id" | "createdAt" | "updatedAt">>;
   }): Promise<Task> =>
     apiClient(`/api/tasks/${id}`, {
       method: "PATCH",

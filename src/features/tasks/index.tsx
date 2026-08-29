@@ -5,9 +5,30 @@ import { useTasks } from "./hooks/useTask";
 import VirtualizedTaskList from "./components/list/VirtualizedTaskList";
 import { useMemo } from "react";
 import { filterTasks } from "./utils/filterTasks";
+import { useTaskUIStore } from "./store/uiStore";
+import { TaskModal } from "./components/task-form/TaskModal";
+import { Plus } from "lucide-react";
+import { Button } from "@/shared/components/ui/button";
+import { DeleteTaskDialog } from "./components/task-form/DeleteTaskDialog";
 
 function TasksFeature() {
-  const { data: tasks, isLoading, error } = useTasks();
+  const {
+    activeTaskId,
+    isCreateModalOpen,
+    deleteTaskId,
+    openEdit,
+    openCreate,
+    closeModal,
+    openDelete,
+    closeDelete,
+  } = useTaskUIStore();
+
+  const { data: tasks, isLoading, error, refetch } = useTasks();
+
+  const activeTaskToEdit = useMemo(() => {
+    if (!activeTaskId || !tasks) return undefined;
+    return tasks.find((t) => t.id === activeTaskId);
+  }, [activeTaskId, tasks]);
 
   const {
     searchQuery,
@@ -50,21 +71,47 @@ function TasksFeature() {
             onReset={resetFilters}
           />
         </div>
+
+        {/* Create task button */}
+        <Button onClick={openCreate} className="h-9 gap-1.5 text-sm">
+          <Plus className="h-4 w-4" />
+          Create Task
+        </Button>
       </div>
 
       <div>
         {isLoading ? (
           <div>Loading...</div>
         ) : error ? (
-          <div>Error: {error.message}</div>
+          <div className="flex flex-col items-center justify-center p-12 text-center rounded-lg border border-destructive/20 bg-destructive/5">
+            <p className="text-destructive font-medium mb-2">
+              Failed to load tasks
+            </p>
+            <Button variant="outline" onClick={() => refetch()}>
+              Retry
+            </Button>
+          </div>
         ) : (
           <VirtualizedTaskList
             tasks={filteredTasks!}
-            onEdit={(id: string) => {}}
-            onDelete={(id: string) => {}}
+            onEdit={openEdit}
+            onDelete={openDelete}
           />
         )}
       </div>
+
+      {(isCreateModalOpen || Boolean(activeTaskId)) && (
+        <TaskModal
+          isOpen={isCreateModalOpen || Boolean(activeTaskId)}
+          task={activeTaskToEdit}
+          onClose={closeModal}
+        />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {Boolean(deleteTaskId) && (
+        <DeleteTaskDialog taskId={deleteTaskId} onClose={closeDelete} />
+      )}
     </div>
   );
 }

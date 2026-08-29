@@ -1,3 +1,4 @@
+import type { Task, TaskStatus } from "@/shared/types/task";
 import { taskService } from "../services/taskService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -8,7 +9,7 @@ const taskKeys = {
 
 export function useTasks() {
   return useQuery({
-    queryKey: [taskKeys.all],
+    queryKey: taskKeys.all,
     queryFn: () => taskService.getAll(),
   });
 }
@@ -28,6 +29,31 @@ export function useUpdateTask() {
   return useMutation({
     mutationFn: taskService.update,
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: taskKeys.all });
+    },
+  });
+}
+
+export function useDeleteTask() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: taskService.delete,
+    onMutate: async (id: string) => {
+      await qc.cancelQueries({ queryKey: taskKeys.all });
+      const previousTasks = qc.getQueryData<Task[]>(taskKeys.all) || [];
+
+      qc.setQueryData(
+        taskKeys.all,
+        previousTasks.filter((old) => old.id !== id),
+      );
+      return { previousTasks };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousTasks) {
+        qc.setQueryData(taskKeys.all, context.previousTasks);
+      }
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: taskKeys.all });
     },
   });
