@@ -61,3 +61,5 @@ features based architecture for better scalability and maintainability.
 - add unit and integration tests.
 
 - improve ui and make it fully responsive for mobile devices.
+
+- enhancing taskCard transition effect
